@@ -3,9 +3,9 @@
 Uma CLI simples em Node.js para organizar qualquer diretório automaticamente por extensão de arquivo.
 
 Ex: `fs-keeper ./Downloads` move :
-    -Todos os `.jpg` (e arquivos com outras extensões de imagens) para `Imagens/`;
-    - Todos os `.mp4` (e arquivos com outras extensões de vídeo) para `Videos/`;
-    - Todos os `.txt` (e arquivos com outras extensões de texto) para `Textos/`;
+    <br>__Todos os `.jpg` (e arquivos com outras extensões de imagens) para `Imagens/`;__<br>
+    __Todos os `.mp4` (e arquivos com outras extensões de vídeo) para `Videos/`;__<br>
+    __Todos os `.txt` (e arquivos com outras extensões de texto) para `Textos/`;__<br>
 
 _A organização de ficheiros é feita em função das extensões suportadas pela CLI, caso as extensões não sejam definidas via flag --extensios_
 
@@ -35,17 +35,23 @@ Localmente (para desenvolvimento):
 
 ## MODO DE USO ##
 
-__Default: Organizar diretório__
+Default: Organizar diretório:
+```bash
     fs-keeper ./<Nome_Do_Diretório>
+```
 
-__Simulação: fazer um preview do resultado__
+Simulação: fazer um preview do resultado:
+```bash
     fs-keeper ./<Nome_Do_Diretório> --simulation
+```
 
-__Extensões específicas: organiza apenas os arquivos com as extensões que forem descritas__
+Extensões específicas: organiza apenas os arquivos com as extensões que forem descritas:
+```bash
     fs-keeper ./<Nome_Do_Diretório> --extensions=[<ext1>, <ext2>, <ext3>, <extn>]
+```
 
 ## REQUISITO ##
 Node.Js 18+
 
-## rLICENÇA ##
+## LICENÇA ##
 MIT &copy; 2026 Gabriel Ângelo
