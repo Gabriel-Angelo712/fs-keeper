@@ -3,11 +3,13 @@ import fs from "node:fs/promises";
 import DomainError from "../utils/errors/domain-error.js";
 import Log from "../logger/logger.js";
 import ModeDefiner from "../mode-definer/mode-definer.js";
+import Directory from "../data-access/directory.js";
 
 export default class Validator {
   constructor(args, dirPath) {
     this.args = args;
     this.dirPath = dirPath;
+    this.directory = new Directory(this.dirPath);
   }
 
   // Private methods
@@ -18,39 +20,6 @@ export default class Validator {
         "No arguments provided. Please provide a path.",
         400,
       );
-    }
-  }
-
-  async #doesPathExist() {
-    // Check if the first argument is an existing directory
-    try {
-      const stats = await fs.stat(this.dirPath);
-      if (stats.isDirectory()) {
-        new Log().info(`Validated directory: ${this.dirPath}`);
-        return true;
-      }
-
-      throw new DomainError("Passed file path instead directory", 400);
-    } catch (err) {
-      throw new DomainError(err.message, 400);
-    }
-  }
-
-  async #isReadingAllowed() {
-    try {
-      await fs.access(this.dirPath, fs.constants.R_OK);
-      new Log().info(`Read access validated for directory: ${this.dirPath}`);
-    } catch (err) {
-      throw new DomainError(err.message, 403);
-    }
-  }
-
-  async #isWritingAllowed() {
-    try {
-      await fs.access(this.dirPath, fs.constants.W_OK);
-      new Log().info(`write access validated for directory: ${this.dirPath}`);
-    } catch (err) {
-      throw new DomainError(err.message, 403);
     }
   }
 
@@ -68,9 +37,9 @@ export default class Validator {
   async validateArguments(fn) {
     try {
       this.#areArgumentsProvided();
-      await this.#doesPathExist();
-      await this.#isReadingAllowed();
-      await this.#isWritingAllowed();
+      await this.directory.doesPathExist();
+      await this.directory.isReadingAllowed();
+      await this.directory.isWritingAllowed();
       this.#isSimulationModeEnabled();
       this.#isRestoreModeEnabled();
       fn();
