@@ -56,7 +56,6 @@ export default class ExtensionsParser {
     }
     new Log().info(`Extensions were not provided or extensions array is empty`);
     new Log().info(`Using default extensions`);
-    // fn();
     return result;
   }
 }
