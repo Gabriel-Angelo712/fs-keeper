@@ -19,7 +19,6 @@ export default class Validator {
         400,
       );
     }
-    new Log().info(`Arguments: ${this.args}`);
   }
 
   async #doesPathExist() {
@@ -33,10 +32,7 @@ export default class Validator {
 
       throw new DomainError("Passed file path instead directory", 400);
     } catch (err) {
-      throw new DomainError(
-        "First argument must be an existing directory.",
-        400,
-      );
+      throw new DomainError(err.message, 400);
     }
   }
 
@@ -45,10 +41,7 @@ export default class Validator {
       await fs.access(this.dirPath, fs.constants.R_OK);
       new Log().info(`Read access validated for directory: ${this.dirPath}`);
     } catch (err) {
-      throw new DomainError(
-        "Reading access denied for the provided path.",
-        403,
-      );
+      throw new DomainError(err.message, 403);
     }
   }
 
@@ -57,10 +50,7 @@ export default class Validator {
       await fs.access(this.dirPath, fs.constants.W_OK);
       new Log().info(`write access validated for directory: ${this.dirPath}`);
     } catch (err) {
-      throw new DomainError(
-        "Writing access denied for the provided path.",
-        403,
-      );
+      throw new DomainError(err.message, 403);
     }
   }
 
@@ -76,12 +66,16 @@ export default class Validator {
 
   //Method to validate the arguments (public)
   async validateArguments(fn) {
-    this.#areArgumentsProvided(this.args);
-    await this.#doesPathExist(this.dirPath);
-    await this.#isReadingAllowed(this.dirPath);
-    await this.#isWritingAllowed(this.dirPath);
-    this.#isSimulationModeEnabled();
-    this.#isRestoreModeEnabled();
-    fn();
+    try {
+      this.#areArgumentsProvided();
+      await this.#doesPathExist();
+      await this.#isReadingAllowed();
+      await this.#isWritingAllowed();
+      this.#isSimulationModeEnabled();
+      this.#isRestoreModeEnabled();
+      fn();
+    } catch (err) {
+      throw err; //err is already an instance of DomainError
+    }
   }
 }

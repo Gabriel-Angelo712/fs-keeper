@@ -12,7 +12,9 @@ const paramsParser = new ExtensionsParser(args);
 
 validator.validateArguments(() => {
   new Log().info(`Starting fs-keeper with path: ${args[0]}`);
+  //Verifica se a flag --extensions foi passada na chamada da CLI e valida a flag
   paramsParser.areExtensionsProvided(() => {
+    //Faz o parse das extensões enviadas via flag --extensions
     paramsParser.parse();
   });
 });

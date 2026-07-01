@@ -4,7 +4,6 @@ import DomainError from "../utils/errors/domain-error.js";
 export default class ExtensionsParser {
   #args;
   constructor(args) {
-    console.log(args);
     this.#args = args;
   }
 
@@ -24,15 +23,16 @@ export default class ExtensionsParser {
   }
 
   parse() {
-    return new Log().info("Parsing extensions");
+    new Log().info("Parsing extensions...");
   }
 
   areExtensionsProvided(fn) {
     const FLAG = this.#extractFlag(this.#args);
-    let result =
-      this.#isContentWrapped(FLAG) && this.#isExtensionArrayEmpty(FLAG);
+    let result = false;
 
     if (FLAG) {
+      result =
+        this.#isContentWrapped(FLAG) && this.#isExtensionArrayEmpty(FLAG);
       if (result) {
         new Log().info("Extensions were correctly provided");
         return result;
@@ -44,7 +44,11 @@ export default class ExtensionsParser {
       fn();
       return result;
     }
+    new Log().info(
+      "Extensions were not provided or extensions array is empty",
+    );
     new Log().info("Using default extensions");
+    fn();
     return result;
   }
 }
