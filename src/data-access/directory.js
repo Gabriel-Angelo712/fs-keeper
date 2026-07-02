@@ -7,8 +7,9 @@ export default class Directory {
     this.dirPath = _path;
   }
 
-  read() {
+  async read() {
     new Log().info(`Starting fs-keeper with path: ${this.dirPath}`);
     new Log().info(`Reading directory ${this.dirPath}`);
+    return await fs.readdir(this.dirPath, { recursive: true });
   }
 }

@@ -20,18 +20,23 @@ const directory = new Directory(dirPath);
 const paramsParser = new ExtensionsParser(args);
 
 argsValidator.validateArguments(async () => {
-  //Verificação de modos
-  simulationMode.isModeEnabled("simulation");
-  restoreMode.isModeEnabled("restore");
   //validação do diretório fornecido
   await directoryValidator.doesPathExist();
   await directoryValidator.isReadingAllowed();
   await directoryValidator.isWritingAllowed();
+  
   //Verifica se a flag --extensions foi passada na chamada da CLI e valida a flag
   let hasExtensions = extensionsValidator.areExtensionsProvided();
+  
+  //Verificação de modos
+  simulationMode.isModeEnabled("simulation", () => {});
+  restoreMode.isModeEnabled("restore", () => {});
+
   if (hasExtensions) {
     paramsParser.parse();
-    directory.read();
+    const DIRECTORY_CONTENT = await directory.read();
     return;
   }
+  const DIRECTORY_CONTENT = await directory.read();
+  return;
 });
