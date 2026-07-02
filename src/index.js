@@ -6,15 +6,21 @@ import Log from "./logger/logger.js";
 import { args, dirPath } from "./utils/chared.js";
 import Validator from "./validator/args-validator.js";
 import ExtensionsParser from "./parser/extensions-parser.js";
+import Directory from "./data-access/directory.js";
 
 const validator = new Validator(args, dirPath);
+const directory = new Directory(dirPath);
 const paramsParser = new ExtensionsParser(args);
 
-validator.validateArguments(() => {
-  new Log().info(`Starting fs-keeper with path: ${args[0]}`);
+validator.validateArguments(async () => {
+  await directory.doesPathExist();
+  await directory.isReadingAllowed();
+  await directory.isWritingAllowed();
   //Verifica se a flag --extensions foi passada na chamada da CLI e valida a flag
-  paramsParser.areExtensionsProvided(() => {
-    //Faz o parse das extensões enviadas via flag --extensions
+  let hasExtensions = paramsParser.areExtensionsProvided();
+  if (hasExtensions) {
     paramsParser.parse();
-  });
+    directory.read();
+    return;
+  }
 });

@@ -3,13 +3,11 @@ import fs from "node:fs/promises";
 import DomainError from "../utils/errors/domain-error.js";
 import Log from "../logger/logger.js";
 import ModeDefiner from "../mode-definer/mode-definer.js";
-import Directory from "../data-access/directory.js";
 
 export default class Validator {
   constructor(args, dirPath) {
     this.args = args;
     this.dirPath = dirPath;
-    this.directory = new Directory(this.dirPath);
   }
 
   // Private methods
@@ -34,12 +32,9 @@ export default class Validator {
   }
 
   //Method to validate the arguments (public)
-  async validateArguments(fn) {
+  validateArguments(fn) {
     try {
       this.#areArgumentsProvided();
-      await this.directory.doesPathExist();
-      await this.directory.isReadingAllowed();
-      await this.directory.isWritingAllowed();
       this.#isSimulationModeEnabled();
       this.#isRestoreModeEnabled();
       fn();

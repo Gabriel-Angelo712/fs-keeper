@@ -1,10 +1,11 @@
 import Log from "../logger/logger.js";
 import DomainError from "../utils/errors/domain-error.js";
 import fs from "node:fs/promises";
+import path from "node:path";
 
 export default class Directory {
-  constructor(path) {
-    this.dirPath = path;
+  constructor(_path) {
+    this.dirPath = _path;
   }
 
   async doesPathExist() {
@@ -38,5 +39,10 @@ export default class Directory {
     } catch (err) {
       throw new DomainError(err.message, 403);
     }
+  }
+
+  read() {
+    new Log().info(`Starting fs-keeper with path: ${this.dirPath}`);
+    new Log().info(`Reading directory ${this.dirPath}`);
   }
 }

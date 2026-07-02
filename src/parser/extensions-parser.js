@@ -34,7 +34,7 @@ export default class ExtensionsParser {
     return extensionsArray;
   }
 
-  areExtensionsProvided(fn) {
+  areExtensionsProvided() {
     let result = false;
 
     if (this.#flag) {
@@ -45,7 +45,6 @@ export default class ExtensionsParser {
         this.openBracketIndex = this.#flag.indexOf("[");
         this.closeBracketIndex = this.#flag.indexOf("]");
         new Log().info(`Extensions were correctly provided`);
-        fn();
         return result;
       }
       new Log().info(
