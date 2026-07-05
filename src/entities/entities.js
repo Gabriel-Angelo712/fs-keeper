@@ -1,6 +1,6 @@
 const DEFAULT_EXTENSIONS = {
   images: {
-    label: "Imagens",
+    label: "Images",
     extensions: [
       ".jpg",
       ".jpeg",
@@ -13,7 +13,7 @@ const DEFAULT_EXTENSIONS = {
     ],
   },
   documents: {
-    label: "Documentos",
+    label: "Documents",
     extensions: [
       ".pdf",
       ".doc",
@@ -30,7 +30,7 @@ const DEFAULT_EXTENSIONS = {
     ],
   },
   code: {
-    label: "Código",
+    label: "Code",
     extensions: [
       ".js",
       ".ts",
@@ -56,7 +56,7 @@ const DEFAULT_EXTENSIONS = {
     ],
   },
   videos: {
-    label: "Vídeos",
+    label: "Videos",
     extensions: [
       ".mp4",
       ".avi",
@@ -69,15 +69,15 @@ const DEFAULT_EXTENSIONS = {
     ],
   },
   audio: {
-    label: "Áudio",
+    label: "Audio",
     extensions: [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"],
   },
   compressed: {
-    label: "Compactados",
+    label: "Compressed",
     extensions: [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz", ".iso"],
   },
   executables: {
-    label: "Executáveis",
+    label: " Executables",
     extensions: [
       ".exe",
       ".msi",
@@ -91,11 +91,11 @@ const DEFAULT_EXTENSIONS = {
     ],
   },
   data: {
-    label: "Dados",
+    label: "Data",
     extensions: [".csv", ".tsv", ".sql", ".db", ".sqlite", ".mdb", ".parquet"],
   },
   fonts: {
-    label: "Fontes",
+    label: "Fonts",
     extensions: [".ttf", ".otf", ".woff", ".woff2", ".eot"],
   },
   design: {
@@ -103,5 +103,11 @@ const DEFAULT_EXTENSIONS = {
     extensions: [".ai", ".eps", ".psd", ".xd", ".sketch", ".fig"],
   },
 };
+
+export function* demandDefaultExtensions() {
+  for (let obj of Object.values(DEFAULT_EXTENSIONS)) {
+    yield obj;    
+  }
+}
 
 export default DEFAULT_EXTENSIONS;
