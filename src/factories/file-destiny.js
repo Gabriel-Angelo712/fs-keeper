@@ -9,15 +9,25 @@ export default class FileDestiny {
   }
 
   async #DefineDestiny() {
-    Object.values(DEFAULT_EXTENSIONS).forEach((obj) => {
-      obj.extensions.some((extension) => {
-        if (extension === this.#pattern) {
-          this.#destiny = obj.label;
-        }
+    try {
+      Object.values(DEFAULT_EXTENSIONS).forEach((obj) => {
+        obj.extensions.some((extension) => {
+          if (extension === this.#pattern) {
+            this.#destiny = obj.label;
+          }
+        });
       });
-    });
+      return (await this.#destiny) ?? "Other";
+    } catch (err) {
+      if (!this.#pattern) {
+        console.log(
+          "The extension wasn´t defined at FileDestiny instance definition",
+        );
+        return;
+      }
 
-    return await this.#destiny ?? "Other";
+      throw err;
+    }
   }
 
   get destiny() {
