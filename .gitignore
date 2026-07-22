@@ -2,4 +2,4 @@
 *.agentkanban
 *.kilo
 AGENTS.md
-test-files/
+test/

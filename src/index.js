@@ -2,20 +2,9 @@
 import fs from "node:fs/promises";
 import { extname, join } from "node:path";
 import DEFAULT_EXTENSIONS from "./entities/entities.js";
+import { DATA_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
 
 // const DIRECTORY = "C:/Users/Gabriel-Ângelo/Downloads/";
-const DIRECTORY = process.argv.slice(2)[0]
-
-let dataPromise = fs
-  .readdir(DIRECTORY, { recursive: false })
-  .then(function* (data) {
-    for (const element of data) {
-      const extension = extname(element);
-      if (extension) {
-        yield { file: element, extension: extension };
-      }
-    }
-  });
 
 function getDestiny({ file, pattern }) {
   let destiny;
@@ -45,7 +34,7 @@ async function handleOrganization({ file, destiny }) {
     });
 }
 
-dataPromise.then(async (data) => {
+DATA_PROMISE.then(async (data) => {
   for await (const element of data) {
     const { file, extension } = element;
     const destiny = getDestiny({ file: file, pattern: extension });
