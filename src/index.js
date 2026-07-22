@@ -4,8 +4,6 @@ import { extname, join } from "node:path";
 import DEFAULT_EXTENSIONS from "./entities/entities.js";
 import { DATA_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
 
-// const DIRECTORY = "C:/Users/Gabriel-Ângelo/Downloads/";
-
 function getDestiny({ file, pattern }) {
   let destiny;
   Object.values(DEFAULT_EXTENSIONS).forEach((obj) => {
@@ -35,14 +33,18 @@ async function handleOrganization({ file, destiny }) {
 }
 
 DATA_PROMISE.then(async (data) => {
-  for await (const element of data) {
-    const { file, extension } = element;
-    const destiny = getDestiny({ file: file, pattern: extension });
+  try {
+    for await (const element of data) {
+      const { file, extension } = element;
+      const destiny = getDestiny({ file: file, pattern: extension });
 
-    try {
       await handleOrganization({ file: file, destiny: destiny });
-    } catch (err) {
-      continue;
     }
+  } catch (err) {
+    if (!data) {
+      console.log(`Unable to iterate in files from ${DIRECTORY}`);
+      return;
+    }
+    throw err;
   }
 });
