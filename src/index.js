@@ -4,22 +4,7 @@ import { extname, join } from "node:path";
 import DEFAULT_EXTENSIONS from "./entities/entities.js";
 import { DATA_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
 import FileDestiny from "./factories/file-destiny.js";
-
-async function handleOrganization({ file, destiny }) {
-  const completeDestiny = join(DIRECTORY, destiny);
-
-  await fs.access(completeDestiny).catch(() => {
-    console.log(`Creating ${completeDestiny}`);
-    console.log(`Moving files to ${completeDestiny}`);
-    fs.mkdir(completeDestiny, { recursive: false });
-  });
-
-  await fs
-    .copyFile(join(DIRECTORY, file), join(completeDestiny, file))
-    .then(async () => {
-      await fs.unlink(join(DIRECTORY, file));
-    });
-}
+import FilesOrganizer from "./data-access/files-organizer.js";
 
 DATA_PROMISE.then(async (data) => {
   try {
@@ -28,7 +13,11 @@ DATA_PROMISE.then(async (data) => {
       const destiny = await new FileDestiny({ file: file, pattern: extension })
         .destiny;
 
-      await handleOrganization({ file: file, destiny: destiny });
+      const ORGANIZER = await new FilesOrganizer({
+        file: file,
+        destiny: destiny,
+      });
+      await ORGANIZER.build();
     }
   } catch (err) {
     if (!data) {
