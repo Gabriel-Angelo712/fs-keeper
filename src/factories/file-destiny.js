@@ -20,7 +20,7 @@ export default class FileDestiny {
       return (await this.#destiny) ?? "Other";
     } catch (err) {
       if (!this.#pattern) {
-        console.log(
+        console.error(
           "The extension wasn´t defined at FileDestiny instance definition",
         );
         return;

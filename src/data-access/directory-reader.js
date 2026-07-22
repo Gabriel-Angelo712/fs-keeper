@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { extname } from "node:path";
 
 const DIRECTORY = process.argv.slice(2)[0];
-const DATA_PROMISE = fs
+const FILES_PROMISE = fs
   .readdir(DIRECTORY, { recursive: false })
   .then(function* (data) {
     for (const element of data) {
@@ -14,11 +14,11 @@ const DATA_PROMISE = fs
   })
   .catch((err) => {
     if (err.code === "ENOENT") {
-      console.log(`Directory ${DIRECTORY} doesn´t exist`);
+      console.error(`Directory ${DIRECTORY} doesn´t exist`);
       return;
     }
 
     throw err;
   });
 
-export { DATA_PROMISE, DIRECTORY };
+export { FILES_PROMISE, DIRECTORY };

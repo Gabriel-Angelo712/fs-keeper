@@ -2,14 +2,15 @@
 import fs from "node:fs/promises";
 import { extname, join } from "node:path";
 import DEFAULT_EXTENSIONS from "./entities/entities.js";
-import { DATA_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
+import { FILES_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
 import FileDestiny from "./factories/file-destiny.js";
 import FilesOrganizer from "./data-access/files-organizer.js";
+import Statistics from "./statistics/stats.js";
 
-DATA_PROMISE.then(async (data) => {
+FILES_PROMISE.then(async (files) => {
   try {
-    for await (const element of data) {
-      const { file, extension } = element;
+    for await (const fileObj of files) {
+      const { file, extension } = fileObj;
       const destiny = await new FileDestiny({ file: file, pattern: extension })
         .destiny;
 
@@ -20,10 +21,11 @@ DATA_PROMISE.then(async (data) => {
       await ORGANIZER.build();
     }
   } catch (err) {
-    if (!data) {
-      console.log(`Unable to iterate in files from ${DIRECTORY}`);
+    if (!files) {
+      console.error(`Unable to iterate in files from ${DIRECTORY}`);
       return;
     }
     throw err;
   }
+  await new Statistics().stats();
 });
