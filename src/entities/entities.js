@@ -77,7 +77,7 @@ const DEFAULT_EXTENSIONS = {
     extensions: [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz", ".iso"],
   },
   executables: {
-    label: " Executables",
+    label: "Executables",
     extensions: [
       ".exe",
       ".msi",
@@ -88,6 +88,7 @@ const DEFAULT_EXTENSIONS = {
       ".sh",
       ".bat",
       ".cmd",
+      ".ini",
     ],
   },
   data: {
@@ -103,11 +104,5 @@ const DEFAULT_EXTENSIONS = {
     extensions: [".ai", ".eps", ".psd", ".xd", ".sketch", ".fig"],
   },
 };
-
-export function* demandDefaultExtensions() {
-  for (let obj of Object.values(DEFAULT_EXTENSIONS)) {
-    yield obj;    
-  }
-}
 
 export default DEFAULT_EXTENSIONS;

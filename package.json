@@ -1,16 +1,17 @@
 {
   "name": "fs-keeper",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "type": "module",
   "bin": {
     "fs-keeper": "./src/index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "link": "npm unlink -g && npm link",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
