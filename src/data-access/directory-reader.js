@@ -19,6 +19,12 @@ const FILES_PROMISE = fs
       );
       return;
     }
+    if (err.code === "ENOTDIR") {
+      console.error(
+        `[${new Date().toISOString()}] Error: Path ${DIRECTORY} must be an existent directory`,
+      );
+      return;
+    }
 
     throw err;
   });
