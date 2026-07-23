@@ -21,7 +21,7 @@ export default class FileDestiny {
     } catch (err) {
       if (!this.#pattern) {
         console.error(
-          "The extension wasn´t defined at FileDestiny instance definition",
+          `[${new Date().toISOString()}] Error: The extension wasn´t defined at FileDestiny instance definition`,
         );
         return;
       }

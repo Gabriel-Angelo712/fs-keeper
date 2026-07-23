@@ -22,7 +22,9 @@ FILES_PROMISE.then(async (files) => {
     }
   } catch (err) {
     if (!files) {
-      console.error(`Unable to iterate in files from ${DIRECTORY}`);
+      console.error(
+        `[${new Date().toISOString()}] Error: Unable to iterate in files from ${DIRECTORY}`,
+      );
       return;
     }
     throw err;

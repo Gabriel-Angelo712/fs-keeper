@@ -11,12 +11,14 @@ export default class Statistics {
       await readdir(join(DIRECTORY, obj.label))
         .then((files) => {
           console.log(
-            `${files.length} files were moved to ${join(DIRECTORY, obj.label)}`,
+            `[${new Date().toISOString()}] Info: ${files.length} files were moved to ${join(DIRECTORY, obj.label)}`,
           );
         })
         .catch((err) => {
           if (err.code === "ENOENT") {
-            console.error(`Directory ${join(DIRECTORY, obj.label)} doesn´t exist`);
+            console.info(
+              `[${new Date().toISOString()}] Info: Directory ${join(DIRECTORY, obj.label)} doesn´t exist`,
+            );
           }
         });
     });

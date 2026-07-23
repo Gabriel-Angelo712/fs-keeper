@@ -14,7 +14,9 @@ const FILES_PROMISE = fs
   })
   .catch((err) => {
     if (err.code === "ENOENT") {
-      console.error(`Directory ${DIRECTORY} doesn´t exist`);
+      console.error(
+        `[${new Date().toISOString()}] Error: Directory ${DIRECTORY} doesn´t exist`,
+      );
       return;
     }
 

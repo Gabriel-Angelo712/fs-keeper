@@ -12,8 +12,12 @@ export default class FilesOrganizer {
     this.#completeDestiny = join(DIRECTORY, this.#destiny);
 
     this.MESSAGES = {
-      creating: console.log(`Creating ${this.#completeDestiny}`),
-      moving: console.log(`Moving files to ${this.#completeDestiny}`),
+      creating: console.info(
+        `[${new Date().toISOString()}] Info: Creating ${this.#completeDestiny}`,
+      ),
+      moving: console.info(
+        `[${new Date().toISOString()}] Info: Moving files to ${this.#completeDestiny}`,
+      ),
     };
   }
 
