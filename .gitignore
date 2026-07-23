@@ -4,3 +4,5 @@
 *.kilo
 AGENTS.md
 test/
+
+src/data-access/store-directory.js

@@ -1,5 +1,5 @@
 import DEFAULT_EXTENSIONS from "../entities/entities.js";
-import { DIRECTORY } from "../data-access/directory-reader.js";
+import { DIRECTORY } from "../utils/utills.js";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 

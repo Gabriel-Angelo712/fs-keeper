@@ -1,4 +1,5 @@
 import DEFAULT_EXTENSIONS from "../entities/entities.js";
+
 export default class FileDestiny {
   #destiny;
   #file;
@@ -20,7 +21,7 @@ export default class FileDestiny {
       return (await this.#destiny) ?? "Other";
     } catch (err) {
       if (!this.#pattern) {
-        console.error(
+        throw Error(
           `[${new Date().toISOString()}] Error: The extension wasn´t defined at FileDestiny instance definition`,
         );
         return;

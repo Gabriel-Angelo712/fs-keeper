@@ -2,32 +2,70 @@
 import fs from "node:fs/promises";
 import { extname, join } from "node:path";
 import DEFAULT_EXTENSIONS from "./entities/entities.js";
-import { FILES_PROMISE, DIRECTORY } from "./data-access/directory-reader.js";
+import Files from "./data-access/directory-reader.js";
 import FileDestiny from "./factories/file-destiny.js";
 import FilesOrganizer from "./data-access/files-organizer.js";
+import ActiveModes, { DIRECTORY, FLAGS } from "./utils/utills.js";
 import Statistics from "./statistics/stats.js";
+import Storage from "./data-access/store-directory.js";
+import { FILE } from "node:dns";
 
-FILES_PROMISE.then(async (files) => {
-  try {
-    for await (const fileObj of files) {
-      const { file, extension } = fileObj;
-      const destiny = await new FileDestiny({ file: file, pattern: extension })
-        .destiny;
+const UTIL = new ActiveModes();
+const STORAGE = new Storage();
+const FILES = new Files();
 
-      const ORGANIZER = await new FilesOrganizer({
-        file: file,
-        destiny: destiny,
-      });
-      await ORGANIZER.build();
-    }
-  } catch (err) {
-    if (!files) {
-      console.error(
-        `[${new Date().toISOString()}] Error: Unable to iterate in files from ${DIRECTORY}`,
-      );
-      return;
-    }
-    throw err;
+
+function handleErrors(files, err) {
+  if (!files) {
+    throw Error(
+      `[${new Date().toISOString()}] Error: Unable to iterate in files from ${DIRECTORY}`,
+    );
+    return;
   }
-  await new Statistics().stats();
+  throw err;
+}
+
+async function handleFilesIteration(files) {
+  for await (const fileObj of files) {
+    const { file, extension } = fileObj;
+    STORAGE.snapPath(file)
+    const destiny = await new FileDestiny({
+      file: file,
+      pattern: extension,
+    }).destiny;
+
+    const ORGANIZER = await new FilesOrganizer({
+      file: file,
+      destiny: destiny,
+    });
+    await ORGANIZER.build();
+  }
+}
+
+fs.access(STORAGE.storageDirectory).catch(() => {
+  STORAGE.create();
+  console.info(
+    `[${new Date().toISOString()}] Info: storage directory sucessfuly created`,
+  );
+});
+
+UTIL.getModes().then((modesArr) => {
+  if (modesArr.includes("restore")) {
+    console.info(`[${new Date().toISOString()}] Info: restore mode abled`);
+    return;
+  }
+
+  if (modesArr.includes("simulation")) {
+    console.info(`[${new Date().toISOString()}] Info: simulation mode abled`);
+    return;
+  }
+
+  FILES.get().then(async (files) => {
+    try {
+      handleFilesIteration(files);
+    } catch (err) {
+      handleErrors(files, err);
+    }
+    await new Statistics().stats();
+  });
 });

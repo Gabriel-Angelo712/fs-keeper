@@ -1,4 +1,4 @@
-import { DIRECTORY } from "./directory-reader.js";
+import { DIRECTORY } from "../utils/utills.js";
 import { join } from "node:path";
 import { access, mkdir, copyFile, unlink } from "node:fs/promises";
 
@@ -11,14 +11,7 @@ export default class FilesOrganizer {
     this.#destiny = destiny;
     this.#completeDestiny = join(DIRECTORY, this.#destiny);
 
-    this.MESSAGES = {
-      creating: console.info(
-        `[${new Date().toISOString()}] Info: Creating ${this.#completeDestiny}`,
-      ),
-      moving: console.info(
-        `[${new Date().toISOString()}] Info: Moving files to ${this.#completeDestiny}`,
-      ),
-    };
+    this.CREATING_MESSAGE = `[${new Date().toISOString()}] Info: Creating ${this.#completeDestiny}`;
   }
 
   async #handleFileAccess() {
@@ -31,16 +24,24 @@ export default class FilesOrganizer {
 
   async build() {
     await this.#handleFileAccess().catch(() => {
-      this.MESSAGES.creating;
-      this.MESSAGES.moving;
+      console.info(this.CREATING_MESSAGE);
       this.#handleFileUnlink();
     });
 
     await copyFile(
       join(DIRECTORY, this.#file),
       join(this.#completeDestiny, this.#file),
-    ).then(async () => {
-      await unlink(join(DIRECTORY, this.#file));
-    });
+    )
+      .then(async () => {
+        await unlink(join(DIRECTORY, this.#file));
+      })
+      .catch((err) => {
+        if (err.code === "EPERM") {
+          throw Error(
+            `[${new Date().toISOString()}] Error: ungiven permission to operate at ${DIRECTORY}`,
+          );
+        }
+        return;
+      });
   }
 }
