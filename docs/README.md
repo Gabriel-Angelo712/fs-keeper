@@ -1,16 +1,32 @@
 # fs-keeper
 
-A simple Node.js CLI to automatically organize any directory by file extension.
+**A simple, zero-dependency Node.js CLI to automatically organize any directory by file extension.**
+
+Tired of messy Downloads folders? `fs-keeper` moves files into clean category folders (`Images`, `Code`, `Videos`, `Documents`…) with a single command.  
+It also supports **dry-run simulation** and **one-click restore** of the last organization.
+
+---
+
+## Features
+
+- Organize files by extension into category folders
+- Simulation mode (`--simulation`) — preview without changing anything
+- Restore mode (`--restore`) — undo the last organization
+- Custom extension filter (`--extensions=[js,ts,py]`)
+- Zero external dependencies (pure Node.js)
+- Safe by design: never overwrites existing files
+- Works on Windows, macOS and Linux
+
+---
 
 ## Installation
 
-### Global installation
+### Global (recommended)
 
 ```bash
 npm install -g fs-keeper
-```
 
-### Local installation (development)
+### Local / development
 
 ```bash
 git clone https://github.com/Gabriel-Angelo712/fs-keeper.git
@@ -18,135 +34,132 @@ cd fs-keeper
 npm link
 ```
 
+> Requires **Node.js 18 or higher**.
+
+---
+
+## Quick Start
+
+```bash
+# Organize your Downloads folder
+fs-keeper ./Downloads
+
+# Preview what would happen (no changes)
+fs-keeper ./Downloads --simulation
+
+# Undo the last organization
+fs-keeper ./Downloads --restore
+```
+
+---
+
 ## Usage
 
-### Organize a directory
-
 ```bash
-fs-keeper ./<directory_name>
+fs-keeper <directory> [options]
 ```
 
-### Simulation mode
+### Options
 
-Preview the result without making changes:
+| Flag                        | Description                                      |
+|----------------------------|--------------------------------------------------|
+| `--simulation`             | Preview the result without moving any files      |
+| `--restore`                | Revert the last organization operation           |
+| `--extensions=[ext1,ext2]` | Organize only the specified extensions           |
 
-```bash
-fs-keeper ./<directory_name> --simulation
-```
-
-### Restore mode
-
-Revert the last organization operation:
+You can combine flags:
 
 ```bash
-fs-keeper ./<directory_name> --restore
+fs-keeper ./Photos --simulation --extensions=[jpg,png,gif]
 ```
 
-### Custom extensions
-
-Organize only files with the specified extensions:
-
-```bash
-fs-keeper ./<directory_name> --extensions=[<ext1>,<ext2>,<ext3>]
-```
-
-### Combined usage
-
-Simulation with custom extensions:
-
-```bash
-fs-keeper ./<directory_name> --simulation --extensions=[<ext1>,<ext2>]
-```
+---
 
 ## Examples
 
 ```bash
-# Organize the Downloads folder
+# Organize everything in Downloads
 fs-keeper ./Downloads
 
-# Preview what would be organized
+# Preview only
 fs-keeper ./Downloads --simulation
 
-# Restore the previous organization
+# Restore previous state
 fs-keeper ./Downloads --restore
 
-# Organize only JavaScript and TypeScript files
-fs-keeper ./Projects --extensions=[js,ts]
+# Organize only code files
+fs-keeper ./Projects --extensions=[js,ts,py,go]
 
-# Preview organizing only image files
-fs-keeper ./Photos --simulation --extensions=[jpg,png,gif]
+# Preview organizing only images
+fs-keeper ./Photos --simulation --extensions=[jpg,png,webp,gif]
 ```
 
-## Default Supported Extensions
+---
 
-| Category   | Extensions                                                                               |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| Images     | jpg, jpeg, png, webp, gif, svg, ico                                                      |
-| Code       | js, ts, jsx, tsx, py, java, c, cpp, cs, rb, go, rs, php, html, css, json, xml, yaml, yml |
-| Videos     | mp4, mov, avi, webm, mkv, m4v                                                            |
-| Audio      | mp3, wav, flac, aac, ogg, wma, m4a                                                       |
-| Text       | txt, md, pdf, doc, docx, xls, xlsx, ppt, pptx, rtf, odt, ods, odp                        |
-| Data       | csv, tsv, sql, db, sqlite, log, xml, json                                                |
-| Compressed | zip, rar, 7z, tar, gz, bz2, xz                                                           |
-| Executable | exe, msi, apk, dmg, deb, rpm, sh, bat, cmd                                               |
+## Default Categories & Extensions
 
-If the `--extensions` flag is not provided, `fs-keeper` uses all default extensions above.
+| Category     | Extensions                                                                 |
+|--------------|----------------------------------------------------------------------------|
+| Images       | jpg, jpeg, png, gif, bmp, svg, webp, ico                                   |
+| Documents    | pdf, doc, docx, xls, xlsx, ppt, pptx, txt, rtf, odt, ods, odp              |
+| Code         | js, ts, jsx, tsx, py, java, c, cpp, cs, rb, go, rs, php, html, css, scss, json, xml, yaml, yml, toml |
+| Videos       | mp4, avi, mov, wmv, flv, mkv, webm, m4v                                    |
+| Audio        | mp3, wav, flac, aac, ogg, wma, m4a                                         |
+| Compressed   | zip, rar, 7z, tar, gz, bz2, xz, iso                                        |
+| Executables  | exe, msi, apk, dmg, deb, rpm, sh, bat, cmd, ini                             |
+| Data         | csv, tsv, sql, db, sqlite, mdb, parquet                                    |
+| Fonts        | ttf, otf, woff, woff2, eot                                                 |
+| Design       | ai, eps, psd, xd, sketch, fig                                              |
 
-## Modes
+If you don’t pass `--extensions`, all of the above are used.
+
+---
+
+## Modes Explained
 
 ### Default Mode
-
-Organizes files based on the default extensions or the ones you provide. Files are moved into category folders inside the target directory.
+Moves matching files into category folders **inside** the target directory.
 
 ### Simulation Mode (`--simulation`)
-
-Shows exactly what would be organized without making any changes. Useful for previewing before applying.
+Shows exactly what would be moved **without touching any file**.  
+Perfect for checking the result before applying.
 
 ### Restore Mode (`--restore`)
+Reverts the last organization, moving files back to their original locations.  
+You can also combine it with `--simulation` to preview a restore.
 
-Reverts the last organization operation, moving files back to their original locations.
-
-`--simulation` and `--restore` can be used together to preview a restore operation.
+---
 
 ## Custom Extensions Format
 
-When using `--extensions`, the format must follow these rules:
-
-- Use square brackets: `[ ]`
-- Separate extensions with commas: `,`
-- Spaces are optional and accepted
-
-Valid formats:
+The `--extensions` flag must use this format:
 
 ```bash
 --extensions=[js,ts,py]
---extensions=[js, ts, py]
---extensions=[js,ts,py,C]
+--extensions=[js, ts, py]     # spaces are allowed
 ```
 
-Invalid formats:
+Invalid formats are ignored and the default extensions are used instead.
 
-```bash
---extensions=js,ts,py   # missing brackets
---extensions=[js ts py]  # missing commas
---extensions=[js, ts, ]  # trailing comma
---extensions=[]          # empty array
-```
+---
 
-If the format is invalid, `fs-keeper` ignores the flag and uses the default extensions.
+## Safety Notes
+
+- Files are **never overwritten**. If a file with the same name already exists in the destination, a warning is shown and the file is skipped.
+- All operations stay inside the target directory.
+- A snapshot of the previous state is kept so `--restore` can bring everything back.
+- No external dependencies — only Node.js built-in modules.
+
+---
 
 ## Requirements
 
-- Node.js 18 or higher
+- Node.js ≥ 18
 
-## Notes
-
-- `fs-keeper` has no external dependencies.
-- `npm install` is not required.
-- Use `npm link` only for global command setup during development.
-- All operations are performed inside the target directory.
-- Existing files are not overwritten. If a file with the same name already exists in the destination folder, a warning is shown.
+---
 
 ## License
 
 MIT © 2026 Gabriel Ângelo
+
+---
