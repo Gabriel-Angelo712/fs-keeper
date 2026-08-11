@@ -48,12 +48,24 @@ export default class Storage {
 
   async create() {
     console.info(
-      `[${new Date().toISOString()}] Info: creating storage directory at ${this.storageDirectory}`,
+      `[${new Date().toISOString()}] Info: creating storage support directory`,
     );
-    return await fs.mkdir(this.storageDirectory, { recursive: true });
+    try {
+      return await fs.mkdir(this.storageDirectory, { recursive: true });
+    } catch {
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to create the storage support directory.`,
+      );
+    }
   }
 
-  snapPath(data) {
-    return fs.appendFile(this.storageFile, JSON.stringify(data));
+  async snapPath(data) {
+    try {
+      return await fs.appendFile(this.storageFile, JSON.stringify(data));
+    } catch {
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to save file restore state.`,
+      );
+    }
   }
 }

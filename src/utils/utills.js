@@ -8,7 +8,7 @@ const FLAGS = [
   // "--simulation",
   "--set-backup",
   // "--restore-backup",
-  // "--update-backup",
+  "--update-backup",
   // "--delete-backup",
   // "--help",
 ];

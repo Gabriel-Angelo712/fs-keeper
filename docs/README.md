@@ -23,7 +23,7 @@ It also supports **dry-run simulation** and **one-click restore** of the last or
 
 ### Global (recommended)
 
-```bash
+````bash
 npm install -g fs-keeper
 
 ### Local / development
@@ -32,7 +32,7 @@ npm install -g fs-keeper
 git clone https://github.com/Gabriel-Angelo712/fs-keeper.git
 cd fs-keeper
 npm link
-```
+````
 
 > Requires **Node.js 18 or higher**.
 
@@ -61,11 +61,11 @@ fs-keeper <directory> [options]
 
 ### Options
 
-| Flag                        | Description                                      |
-|----------------------------|--------------------------------------------------|
-| `--simulation`             | Preview the result without moving any files      |
-| `--restore`                | Revert the last organization operation           |
-| `--extensions=[ext1,ext2]` | Organize only the specified extensions           |
+| Flag                       | Description                                 |
+| -------------------------- | ------------------------------------------- |
+| `--simulation`             | Preview the result without moving any files |
+| `--restore`                | Revert the last organization operation      |
+| `--extensions=[ext1,ext2]` | Organize only the specified extensions      |
 
 You can combine flags:
 
@@ -98,18 +98,18 @@ fs-keeper ./Photos --simulation --extensions=[jpg,png,webp,gif]
 
 ## Default Categories & Extensions
 
-| Category     | Extensions                                                                 |
-|--------------|----------------------------------------------------------------------------|
-| Images       | jpg, jpeg, png, gif, bmp, svg, webp, ico                                   |
-| Documents    | pdf, doc, docx, xls, xlsx, ppt, pptx, txt, rtf, odt, ods, odp              |
-| Code         | js, ts, jsx, tsx, py, java, c, cpp, cs, rb, go, rs, php, html, css, scss, json, xml, yaml, yml, toml |
-| Videos       | mp4, avi, mov, wmv, flv, mkv, webm, m4v                                    |
-| Audio        | mp3, wav, flac, aac, ogg, wma, m4a                                         |
-| Compressed   | zip, rar, 7z, tar, gz, bz2, xz, iso                                        |
-| Executables  | exe, msi, apk, dmg, deb, rpm, sh, bat, cmd, ini                             |
-| Data         | csv, tsv, sql, db, sqlite, mdb, parquet                                    |
-| Fonts        | ttf, otf, woff, woff2, eot                                                 |
-| Design       | ai, eps, psd, xd, sketch, fig                                              |
+| Category    | Extensions                                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------------------- |
+| Images      | jpg, jpeg, png, gif, bmp, svg, webp, ico                                                             |
+| Documents   | pdf, doc, docx, xls, xlsx, ppt, pptx, txt, rtf, odt, ods, odp                                        |
+| Code        | js, ts, jsx, tsx, py, java, c, cpp, cs, rb, go, rs, php, html, css, scss, json, xml, yaml, yml, toml |
+| Videos      | mp4, avi, mov, wmv, flv, mkv, webm, m4v                                                              |
+| Audio       | mp3, wav, flac, aac, ogg, wma, m4a                                                                   |
+| Compressed  | zip, rar, 7z, tar, gz, bz2, xz, iso                                                                  |
+| Executables | exe, msi, apk, dmg, deb, rpm, sh, bat, cmd, ini                                                      |
+| Data        | csv, tsv, sql, db, sqlite, mdb, parquet                                                              |
+| Fonts       | ttf, otf, woff, woff2, eot                                                                           |
+| Design      | ai, eps, psd, xd, sketch, fig                                                                        |
 
 If you don’t pass `--extensions`, all of the above are used.
 
@@ -118,14 +118,18 @@ If you don’t pass `--extensions`, all of the above are used.
 ## Modes Explained
 
 ### Default Mode
+
 Moves matching files into category folders **inside** the target directory.
 
 ### Simulation Mode (`--simulation`)
+
 Shows exactly what would be moved **without touching any file**.  
 Perfect for checking the result before applying.
 
 ### Restore Mode (`--restore`)
+
 Reverts the last organization, moving files back to their original locations.  
+Requires a prior successful organization run: `fs-keeper <directory>` before `fs-keeper <directory> --restore`.
 You can also combine it with `--simulation` to preview a restore.
 
 ---

@@ -23,26 +23,28 @@ export default class FilesOrganizer {
   }
 
   async build() {
-    await this.#handleFileAccess().catch(() => {
+    try {
+      await this.#handleFileAccess();
+    } catch {
       console.info(this.CREATING_MESSAGE);
-      this.#handleFileUnlink();
-    });
+      await this.#handleFileUnlink();
+    }
 
-    await copyFile(
-      join(DIRECTORY, this.#file),
-      join(this.#completeDestiny, this.#file),
-    )
-      .then(async () => {
-        await unlink(join(DIRECTORY, this.#file));
-      })
-      .catch((err) => {
-        if (err.code === "EPERM") {
-          throw Error(
-            `[${new Date().toISOString()}] Error: ungiven permission to operate at ${DIRECTORY}`,
-          );
-          return;
-        }
-        throw err;
-      });
+    try {
+      await copyFile(
+        join(DIRECTORY, this.#file),
+        join(this.#completeDestiny, this.#file),
+      );
+      await unlink(join(DIRECTORY, this.#file));
+    } catch (err) {
+      if (err.code === "EPERM") {
+        throw new Error(
+          `[${new Date().toISOString()}] Error: Permission denied while organizing files in ${DIRECTORY}.`,
+        );
+      }
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to move file ${this.#file}.`,
+      );
+    }
   }
 }

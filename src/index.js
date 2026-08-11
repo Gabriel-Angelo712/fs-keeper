@@ -8,7 +8,6 @@ import FilesOrganizer from "./data-access/files-organizer.js";
 import ActiveModes, { DIRECTORY, FLAGS } from "./utils/utills.js";
 import Statistics from "./statistics/stats.js";
 import Storage from "./data-access/store-directory.js";
-import { FILE } from "node:dns";
 import Restore from "./data-access/restore.js";
 import Backup from "./data-access/backup.js";
 
@@ -18,14 +17,32 @@ const FILES = new Files();
 const RESTORE = new Restore();
 const BACKUP = new Backup();
 
-function handleErrors(files, err) {
+function reportError(message) {
+  const safeMessage = message
+    ? String(message).replace(/[\r\n]+/g, " ")
+    : "An unexpected error occurred.";
+
+  console.error(`[${new Date().toISOString()}] Error: ${safeMessage}`);
+  process.exitCode = 1;
+}
+
+process.on("unhandledRejection", () => {
+  reportError("Unhandled rejection occurred.");
+});
+
+process.on("uncaughtException", () => {
+  reportError("Unexpected runtime error occurred.");
+});
+
+function reportAndExitOnError(files) {
   if (!files) {
-    throw Error(
-      `[${new Date().toISOString()}] Error: Unable to iterate in files from ${DIRECTORY}`,
+    reportError(
+      `Unable to retrieve the files for directory ${DIRECTORY}. Check that the directory exists and you have read access.`,
     );
     return;
   }
-  throw err;
+
+  reportError("An unexpected error occurred while processing the file list.");
 }
 
 async function handleFilesIteration(files) {
@@ -48,7 +65,10 @@ async function handleFilesIteration(files) {
     });
     await ORGANIZER.build();
   }
-  fs.access(STORAGE.storageFile).catch(() => STORAGE.snapPath(result));
+
+  await fs.access(STORAGE.storageFile).catch(async () => {
+    await STORAGE.snapPath(result);
+  });
 }
 
 fs.access(STORAGE.storageDirectory).catch(() => {
@@ -58,13 +78,17 @@ fs.access(STORAGE.storageDirectory).catch(() => {
   );
 });
 
-UTIL.getModes().then((modesArr) => {
+UTIL.getModes().then(async (modesArr) => {
   if (modesArr.includes("restore")) {
     console.info(`[${new Date().toISOString()}] Info: restore mode abled`);
     console.info(
       `[${new Date().toISOString()}] Info: starting restore process`,
     );
-    RESTORE.build();
+    await RESTORE.build().catch(() =>
+      reportError(
+        "Unable to restore files. Verify restore data and directory structure before retrying.",
+      ),
+    );
     return;
   }
 
@@ -78,16 +102,41 @@ UTIL.getModes().then((modesArr) => {
       `[${new Date().toISOString()}] Info: backup setting mode abled`,
     );
 
-    BACKUP.set();
+    await BACKUP.set().catch(() =>
+      reportError(
+        "Unable to create backup. Check backup permissions and destination path.",
+      ),
+    );
     return;
   }
 
-  FILES.get().then(async (files) => {
-    try {
-      handleFilesIteration(files);
-    } catch (err) {
-      handleErrors(files, err);
-    }
-    await new Statistics().stats();
-  });
+  if (modesArr.includes("update-backup")) {
+    console.info(
+      `[${new Date().toISOString()}] Info: backup updating mode abled`,
+    );
+
+    await BACKUP.update().catch(() =>
+      reportError(
+        "Unable to update backup. Ensure the backup directory exists and is accessible.",
+      ),
+    );
+    return;
+  }
+
+  FILES.get()
+    .then(async (files) => {
+      try {
+        await handleFilesIteration(files);
+      } catch {
+        reportError(
+          "Unable to organize files. Check directory contents and permissions.",
+        );
+      }
+      await new Statistics().stats();
+    })
+    .catch(() =>
+      reportError(
+        "Unable to read directory contents. Verify the directory path and try again.",
+      ),
+    );
 });

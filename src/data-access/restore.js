@@ -3,13 +3,25 @@ import { DIRECTORY } from "../utils/utills.js";
 import Storage from "./store-directory.js";
 import fs from "node:fs/promises";
 
-const STORAGE = new Storage();
+export default class Restore extends Storage {
+  constructor() {
+    super();
+  }
 
-export default class Restore {
-  constructor() {}
+  async #handleReading() {
+    try {
+      return await fs.readFile(this.storageFile, "utf-8");
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        throw new Error(
+          `[${new Date().toISOString()}] Error: Restore data not found. Run fs-keeper <directory> to organize the directory before using --restore.`,
+        );
+      }
 
-  #handleReading() {
-    return fs.readFile(STORAGE.storageFile, "utf-8");
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to read restore data. Ensure the initial organization step completed successfully before restoring.`,
+      );
+    }
   }
 
   #handleCopy({ from, to }) {
@@ -21,31 +33,39 @@ export default class Restore {
   }
 
   async #handleDirectoriesDeletion(pathsSet) {
-    if (pathsSet.size) {
-      const directories = [...pathsSet].sort((a, b) => b.length - a.length);
-
-      await Promise.all(
-        directories.map(async (path) => {
-          try {
-            await fs.rmdir(path);
-          } catch (err) {
-            if (err.code === "ENOTEMPTY" || err.code === "ENOENT") {
-              return;
-            }
-            throw err;
-          }
-        }),
-      );
-
-      return true;
+    if (!pathsSet.size) {
+      return false;
     }
 
-    console.log("Unable to delete organizer directories");
-    return false;
+    const directories = [...pathsSet].sort((a, b) => b.length - a.length);
+
+    await Promise.all(
+      directories.map(async (path) => {
+        try {
+          await fs.rmdir(path);
+        } catch (err) {
+          if (err.code === "ENOTEMPTY" || err.code === "ENOENT") {
+            return;
+          }
+
+          throw new Error(
+            `[${new Date().toISOString()}] Error: Unable to remove directory ${path}.`,
+          );
+        }
+      }),
+    );
+
+    return true;
   }
 
   #dataParser(data) {
-    return JSON.parse(data);
+    try {
+      return JSON.parse(data);
+    } catch {
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Restore file is corrupted or contains invalid JSON.`,
+      );
+    }
   }
 
   async build() {
@@ -60,7 +80,14 @@ export default class Restore {
       await this.#handleDeletion(pathsObj.to);
     });
 
-    await Promise.all(restoreOperations);
+    await Promise.all(restoreOperations).catch(() => {
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to complete restore operation.`,
+      );
+    });
     await this.#handleDirectoriesDeletion(pathsToDelete);
+
+    await fs.unlink(this.storageFile).catch(() => {});
+    console.info("Restore process successfuly finished");
   }
 }

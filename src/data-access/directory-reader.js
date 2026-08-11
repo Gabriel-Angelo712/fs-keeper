@@ -26,18 +26,14 @@ export default class Files {
     throw err;
   }
 
-  get() {
-    return this.#handleDirectoryReading()
-      .then(function* (data) {
-        for (const element of data) {
-          const extension = extname(element);
-          if (extension) {
-            yield { file: element, extension: extension };
-          }
-        }
-      })
-      .catch((err) => {
-        this.#handleErrors(err);
-      });
+  async get() {
+    try {
+      const data = await this.#handleDirectoryReading();
+      return data
+        .filter((element) => extname(element))
+        .map((file) => ({ file, extension: extname(file) }));
+    } catch (err) {
+      this.#handleErrors(err);
+    }
   }
 }

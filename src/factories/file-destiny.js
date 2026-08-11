@@ -21,13 +21,14 @@ export default class FileDestiny {
       return (await this.#destiny) ?? "Other";
     } catch (err) {
       if (!this.#pattern) {
-        throw Error(
-          `[${new Date().toISOString()}] Error: The extension wasn´t defined at FileDestiny instance definition`,
+        throw new Error(
+          `[${new Date().toISOString()}] Error: Extension pattern was not defined for file classification.`,
         );
-        return;
       }
 
-      throw err;
+      throw new Error(
+        `[${new Date().toISOString()}] Error: Unable to determine destination for file.`,
+      );
     }
   }
 
