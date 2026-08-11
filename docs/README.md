@@ -12,6 +12,7 @@ It also supports **dry-run simulation** and **one-click restore** of the last or
 - Organize files by extension into category folders
 - Simulation mode (`--simulation`) — preview without changing anything
 - Restore mode (`--restore`) — undo the last organization
+- Backup management: `--set-backup`, `--update-backup`, `--delete-backup`
 - Custom extension filter (`--extensions=[js,ts,py]`)
 - Zero external dependencies (pure Node.js)
 - Safe by design: never overwrites existing files
@@ -23,8 +24,9 @@ It also supports **dry-run simulation** and **one-click restore** of the last or
 
 ### Global (recommended)
 
-````bash
+```bash
 npm install -g fs-keeper
+```
 
 ### Local / development
 
@@ -32,7 +34,7 @@ npm install -g fs-keeper
 git clone https://github.com/Gabriel-Angelo712/fs-keeper.git
 cd fs-keeper
 npm link
-````
+```
 
 > Requires **Node.js 18 or higher**.
 
@@ -46,6 +48,15 @@ fs-keeper ./Downloads
 
 # Preview what would happen (no changes)
 fs-keeper ./Downloads --simulation
+
+# Save a backup copy of the directory
+fs-keeper ./Downloads --set-backup
+
+# Update an existing backup copy
+fs-keeper ./Downloads --update-backup
+
+# Delete the backup copy
+fs-keeper ./Downloads --delete-backup
 
 # Undo the last organization
 fs-keeper ./Downloads --restore
@@ -65,6 +76,9 @@ fs-keeper <directory> [options]
 | -------------------------- | ------------------------------------------- |
 | `--simulation`             | Preview the result without moving any files |
 | `--restore`                | Revert the last organization operation      |
+| `--set-backup`             | Create a backup copy of the directory       |
+| `--update-backup`          | Update an existing backup copy              |
+| `--delete-backup`          | Delete the existing backup copy             |
 | `--extensions=[ext1,ext2]` | Organize only the specified extensions      |
 
 You can combine flags:
@@ -86,6 +100,15 @@ fs-keeper ./Downloads --simulation
 
 # Restore previous state
 fs-keeper ./Downloads --restore
+
+# Create a backup before organizing
+fs-keeper ./Downloads --set-backup
+
+# Update the backup copy
+fs-keeper ./Downloads --update-backup
+
+# Delete the backup copy
+fs-keeper ./Downloads --delete-backup
 
 # Organize only code files
 fs-keeper ./Projects --extensions=[js,ts,py,go]
@@ -131,6 +154,12 @@ Perfect for checking the result before applying.
 Reverts the last organization, moving files back to their original locations.  
 Requires a prior successful organization run: `fs-keeper <directory>` before `fs-keeper <directory> --restore`.
 You can also combine it with `--simulation` to preview a restore.
+
+### Backup Modes
+
+- `--set-backup`: create a backup snapshot of the directory before organizing.
+- `--update-backup`: refresh the existing backup snapshot.
+- `--delete-backup`: remove the existing backup snapshot.
 
 ---
 
