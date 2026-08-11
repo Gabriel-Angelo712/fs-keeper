@@ -1,4 +1,4 @@
-import { cp, access } from "node:fs/promises";
+import { cp, access, rm } from "node:fs/promises";
 import Storage from "./store-directory.js";
 import { join } from "node:path";
 import { DIRECTORY } from "../utils/utills.js";
@@ -42,5 +42,17 @@ export default class Backup extends Storage {
         `[${new Date().toISOString()}] Error: Unable to access backup directory.`,
       );
     }
+  }
+
+  delete() {
+    return rm(this.#backupDirectory, { recursive: true })
+      .then(() => console.info("backup successfuly deleted"))
+      .catch((err) => {
+        throw err;
+        console.error(
+          `[${new Date().toISOString()}] Error: Unable to delete backup. Ensure the backup directory exists and you have permission to remove it.`,
+        );
+        process.exitCode = 1;
+      });
   }
 }

@@ -42,7 +42,7 @@ export default class Restore extends Storage {
     await Promise.all(
       directories.map(async (path) => {
         try {
-          await fs.rmdir(path);
+          await fs.rm(path);
         } catch (err) {
           if (err.code === "ENOTEMPTY" || err.code === "ENOENT") {
             return;

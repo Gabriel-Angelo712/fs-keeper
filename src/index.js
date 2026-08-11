@@ -26,13 +26,13 @@ function reportError(message) {
   process.exitCode = 1;
 }
 
-process.on("unhandledRejection", () => {
-  reportError("Unhandled rejection occurred.");
-});
+// process.on("uncaughtException", () => {
+//   reportError("Unexpected runtime error occurred.");
+// });
 
-process.on("uncaughtException", () => {
-  reportError("Unexpected runtime error occurred.");
-});
+// process.on("unhandledRejection", () => {
+//   reportError("Unhandled rejection occurred.");
+// });
 
 function reportAndExitOnError(files) {
   if (!files) {
@@ -107,6 +107,15 @@ UTIL.getModes().then(async (modesArr) => {
         "Unable to create backup. Check backup permissions and destination path.",
       ),
     );
+    return;
+  }
+
+  if (modesArr.includes("delete-backup")) {
+    console.info(
+      `[${new Date().toISOString()}] Info: backup clearing mode abled`,
+    );
+
+    await BACKUP.delete();
     return;
   }
 

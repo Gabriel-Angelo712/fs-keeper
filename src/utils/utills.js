@@ -9,7 +9,7 @@ const FLAGS = [
   "--set-backup",
   // "--restore-backup",
   "--update-backup",
-  // "--delete-backup",
+  "--delete-backup",
   // "--help",
 ];
 
