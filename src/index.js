@@ -26,13 +26,13 @@ function reportError(message) {
   process.exitCode = 1;
 }
 
-// process.on("uncaughtException", () => {
-//   reportError("Unexpected runtime error occurred.");
-// });
+process.on("uncaughtException", () => {
+  reportError("Unexpected runtime error occurred.");
+});
 
-// process.on("unhandledRejection", () => {
-//   reportError("Unhandled rejection occurred.");
-// });
+process.on("unhandledRejection", () => {
+  reportError("Unhandled rejection occurred.");
+});
 
 function reportAndExitOnError(files) {
   if (!files) {
