@@ -1,4 +1,4 @@
-import DEFAULT_EXTENSIONS from "../entities/entities.js";
+import DEFAULT_EXTENSIONS from "../entities/default-extensions.js";
 import { DIRECTORY } from "../utils/utills.js";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs/promises";
 import { extname, join } from "node:path";
-import DEFAULT_EXTENSIONS from "./entities/entities.js";
+import DEFAULT_EXTENSIONS from "./entities/default-extensions.js";
 import Files from "./data-access/directory-reader.js";
 import FileDestiny from "./factories/file-destiny.js";
 import FilesOrganizer from "./data-access/files-organizer.js";
@@ -10,11 +10,13 @@ import Statistics from "./statistics/stats.js";
 import Storage from "./data-access/store-directory.js";
 import { FILE } from "node:dns";
 import Restore from "./data-access/restore.js";
+import Backup from "./data-access/backup.js";
 
 const UTIL = new ActiveModes();
 const STORAGE = new Storage();
 const FILES = new Files();
 const RESTORE = new Restore();
+const BACKUP = new Backup();
 
 function handleErrors(files, err) {
   if (!files) {
@@ -68,6 +70,15 @@ UTIL.getModes().then((modesArr) => {
 
   if (modesArr.includes("simulation")) {
     console.info(`[${new Date().toISOString()}] Info: simulation mode abled`);
+    return;
+  }
+
+  if (modesArr.includes("set-backup")) {
+    console.info(
+      `[${new Date().toISOString()}] Info: backup setting mode abled`,
+    );
+
+    BACKUP.set();
     return;
   }
 

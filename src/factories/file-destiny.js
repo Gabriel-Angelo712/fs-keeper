@@ -1,4 +1,4 @@
-import DEFAULT_EXTENSIONS from "../entities/entities.js";
+import DEFAULT_EXTENSIONS from "../entities/default-extensions.js";
 
 export default class FileDestiny {
   #destiny;
