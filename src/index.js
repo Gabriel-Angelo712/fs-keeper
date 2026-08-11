@@ -9,11 +9,12 @@ import ActiveModes, { DIRECTORY, FLAGS } from "./utils/utills.js";
 import Statistics from "./statistics/stats.js";
 import Storage from "./data-access/store-directory.js";
 import { FILE } from "node:dns";
+import Restore from "./data-access/restore.js";
 
 const UTIL = new ActiveModes();
 const STORAGE = new Storage();
 const FILES = new Files();
-
+const RESTORE = new Restore();
 
 function handleErrors(files, err) {
   if (!files) {
@@ -26,13 +27,18 @@ function handleErrors(files, err) {
 }
 
 async function handleFilesIteration(files) {
+  let result = [];
   for await (const fileObj of files) {
     const { file, extension } = fileObj;
-    STORAGE.snapPath(file)
     const destiny = await new FileDestiny({
       file: file,
       pattern: extension,
     }).destiny;
+
+    result.push({
+      from: join(DIRECTORY, file),
+      to: join(DIRECTORY, destiny, file),
+    });
 
     const ORGANIZER = await new FilesOrganizer({
       file: file,
@@ -40,6 +46,7 @@ async function handleFilesIteration(files) {
     });
     await ORGANIZER.build();
   }
+  fs.access(STORAGE.storageFile).catch(() => STORAGE.snapPath(result));
 }
 
 fs.access(STORAGE.storageDirectory).catch(() => {
@@ -52,6 +59,10 @@ fs.access(STORAGE.storageDirectory).catch(() => {
 UTIL.getModes().then((modesArr) => {
   if (modesArr.includes("restore")) {
     console.info(`[${new Date().toISOString()}] Info: restore mode abled`);
+    console.info(
+      `[${new Date().toISOString()}] Info: starting restore process`,
+    );
+    RESTORE.build();
     return;
   }
 

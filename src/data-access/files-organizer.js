@@ -40,8 +40,9 @@ export default class FilesOrganizer {
           throw Error(
             `[${new Date().toISOString()}] Error: ungiven permission to operate at ${DIRECTORY}`,
           );
+          return;
         }
-        return;
+        throw err;
       });
   }
 }

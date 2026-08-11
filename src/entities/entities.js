@@ -103,6 +103,10 @@ const DEFAULT_EXTENSIONS = {
     label: "Design",
     extensions: [".ai", ".eps", ".psd", ".xd", ".sketch", ".fig"],
   },
+  other: {
+    label: "Other",
+    extensions: [],
+  },
 };
 
 export default DEFAULT_EXTENSIONS;
