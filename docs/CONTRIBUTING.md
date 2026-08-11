@@ -1,32 +1,32 @@
-# Contribuindo com a fs-keeper
+# Contributing to fs-keeper
 
-Obrigado por querer contribuir! Este documento explica como fazer isso.
+Thanks for wanting to contribute! This document explains how to do so.
 
-## Código de conduta
-Seja respeitoso. Não é tolerado comportamento tóxico.
+## Code of Conduct
+Be respectful. Toxic behavior is not tolerated.
 
-## Como reportar bugs
-Abra uma issue com:
-    1. Passos para reproduzir.
-    2. Comportamento esperado vs atual.
-    3. Versão do Node: `node -v`.
-    4. Sistema Operacional.
+## How to report bugs
+Open an issue including:
+    1. Steps to reproduce.
+    2. Expected vs. actual behavior.
+    3. Node version: `node -v`.
+    4. Operating System.
 
-## Como sugerir features
-Abra uma issue com tag `enhancement` explicando o problema e a solução proposta.
+## How to suggest features
+Open an issue with the `enhancement` tag, explaining the problem and the proposed solution.
 
-## Padrão de commits
-O projecto utiliza convenção de commits para mater o histórico limpo:
-    - `feat:` nova funcionalidade
-    - `fix:` correção de bug
-    - `docs:` mudança na documentação
-    - `refactor:` refatoração (sem mudar o comportamento de nenhuma feature)
+## Commit convention
+The project uses a commit convention to keep the history clean:
+    - `feat:` new feature
+    - `fix:` bug fix
+    - `docs:` documentation change
+    - `refactor:` refactoring (without changing any feature's behavior)
 
-Ex: `feat: adiciona flag --recursive`
+Ex: `feat: add --recursive flag`
 
-Rodando o projeto localmente
+Running the project locally
 ```bash
     git clone https://github.com/Gabriel-Angelo712/fs-keeper.git
     cd fs-keeper
     npm link
-    fs-keeper ./<Nome_Do_Diretório>
+    fs-keeper ./<Directory_Name>
